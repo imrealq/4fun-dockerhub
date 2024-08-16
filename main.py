@@ -126,7 +126,7 @@ async def main():
     db = TinyDB(db_filename)
     for result in crawl_results:
         resp = json.loads(result)
-        images = resp.get('results', [])
+        images = resp.get("results", [])
         save_to_db(db, images)
     db.close()
 
