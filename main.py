@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import random
 import time
 
@@ -11,7 +12,7 @@ from tinydb import Query, TinyDB
 ua = UserAgent()
 
 SIZE = 25
-URL_TEMPLATE = "https://hub.docker.com/api/search/v3/catalog/search?query=&extension_reviewed=&from={0}&size={1}"
+URL_TEMPLATE = "https://hub.docker.com/api/search/v3/catalog/search?from={0}&size={1}"
 
 
 def find_max_from_index(max_value=10000, tolerance=200):
@@ -114,22 +115,32 @@ async def crawl(urls):
 def save_to_db(db, images):
     table = db.table("images")
     for image in images:
-        table.upsert(image, Query().id == id)
+        table.upsert(image, Query().id == image["id"])
+        with open("image_ids.txt", "a") as f:
+            f.write(image["id"] + "\n")
 
 
 async def main():
     urls = get_urls()
 
     db_filename = "docker_hub_images_info.json"
+    image_ids_filename = "image_ids.txt"
+    if os.path.exists(image_ids_filename):
+        os.remove(image_ids_filename)
+
     crawl_results = await crawl(urls)
 
+    total = 0
     db = TinyDB(db_filename)
     for result in crawl_results:
         resp = json.loads(result)
         images = resp.get("results", [])
+        total += len(images)
         save_to_db(db, images)
+    table = db.table("images")
+    print(f"Total recorded images: {len(table)}")
     db.close()
-
+    print(f"Total response images: {total}")
     print(f"Results saved to {db_filename}")
 
 
