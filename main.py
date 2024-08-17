@@ -10,11 +10,11 @@ from tinydb import Query, TinyDB
 
 ua = UserAgent()
 
-SIZE = 200
+SIZE = 25
 URL_TEMPLATE = "https://hub.docker.com/api/search/v3/catalog/search?query=&extension_reviewed=&from={0}&size={1}"
 
 
-def find_max_from_index(max_value=10000, tolerance=SIZE):
+def find_max_from_index(max_value=10000, tolerance=200):
     low = 0
     high = max_value
 
