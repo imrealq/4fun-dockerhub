@@ -10,9 +10,12 @@ def count_images_by_category(items):
             category_counts[category["name"]] += 1
 
     sorted_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)
-    print("Tổng số image theo categories:")
+
+    output = "## Tổng số image theo categories:\n\n"
     for category, count in sorted_categories:
-        print(f"\t{category}: {count}")
+        output += f"- {category}: {count}\n"
+
+    return output
 
 
 def top_by_category(items, num=5):
@@ -21,25 +24,43 @@ def top_by_category(items, num=5):
         for category in item["categories"]:
             category_items[category["name"]].append((item["id"], item["star_count"]))
 
-    print("\nTop 5 mỗi category có star_count từ cao đến thấp:")
+    output = f"\n## Top {num} mỗi category có star_count từ cao đến thấp:\n"
     for category, items in category_items.items():
-        print(f"\n\t{category}:")
+        output += f"\n### {category}:\n"
         sorted_items = sorted(items, key=lambda x: x[1], reverse=True)[:num]
         for i, (id, star_count) in enumerate(sorted_items, 1):
-            print(f"\t\t{i}. {id}: {star_count} stars")
+            output += f"{i}. {id}: {star_count} stars\n"
+
+    return output
 
 
 def top_star_count(items, num=10):
-    sorted_items = sorted(items, key=lambda x: x["star_count"], reverse=True)[:10]
+    sorted_items = sorted(items, key=lambda x: x["star_count"], reverse=True)[:num]
 
-    print(f"\nTop {num} images có star count cao nhất:")
+    output = f"\n## Top {num} images có star count cao nhất:\n\n"
     for i, item in enumerate(sorted_items, 1):
         categories = ", ".join([cat["name"] for cat in item["categories"]])
-        print(
-            f"{i}. {item['id']}: {item['star_count']} stars"
-            + f"\n\t- Categories: {categories}"
-            + f"\n\t- Description: {item['short_description']}"
+        output += (
+            f"{i}. **{item['id']}**: {item['star_count']} stars\n"
+            f"   - Categories: {categories}\n"
+            f"   - Description: {item['short_description']}\n\n"
         )
+
+    return output
+
+
+def generate_markdown_report(items):
+    report = "# Docker Image Analysis Report\n\n"
+    report += count_images_by_category(items)
+    report += top_by_category(items)
+    report += top_star_count(items)
+    return report
+
+
+def write_markdown_to_file(markdown_content, filename="README.md"):
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(markdown_content)
+    print(f"Report has been written to {filename}")
 
 
 def main():
@@ -49,9 +70,8 @@ def main():
 
     table = db.table("images")
     items = table.all()
-    count_images_by_category(items)
-    top_by_category(items)
-    top_star_count(items)
+    markdown_report = generate_markdown_report(items)
+    write_markdown_to_file(markdown_report)
 
     db.close()
     return
