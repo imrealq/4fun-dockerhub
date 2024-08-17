@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import datetime
 
 from tinydb import TinyDB
 
@@ -50,7 +51,10 @@ def top_star_count(items, num=10):
 
 
 def generate_markdown_report(items):
-    report = "# Docker Image Analysis Report\n\n"
+    current_time = datetime.now().strftime("%Y-%m-%d")
+    report = f"# Docker Image Analysis Report\n\n"
+    report += f"**Ngày tạo:** {current_time}\n\n"
+    report += "---\n\n"
     report += count_images_by_category(items)
     report += top_by_category(items)
     report += top_star_count(items)
