@@ -57,7 +57,7 @@ def generate_markdown_report(items):
     report += "---\n\n"
     report += count_images_by_category(items)
     report += top_by_category(items)
-    report += top_star_count(items)
+    report += top_star_count(items, num=20)
     return report
 
 
