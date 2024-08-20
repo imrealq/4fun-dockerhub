@@ -1,7 +1,7 @@
 from collections import defaultdict
 from datetime import datetime
 
-from tinydb import TinyDB
+from db import get_all_items
 
 
 def count_images_by_category(items):
@@ -68,16 +68,10 @@ def write_markdown_to_file(markdown_content, filename="README.md"):
 
 
 def main():
-
-    db_filename = "docker_hub_images_info.json"
-    db = TinyDB(db_filename)
-
-    table = db.table("images")
-    items = table.all()
+    items = get_all_items("images")
     markdown_report = generate_markdown_report(items)
     write_markdown_to_file(markdown_report)
 
-    db.close()
     return
 
 
