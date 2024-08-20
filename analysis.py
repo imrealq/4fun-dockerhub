@@ -22,7 +22,7 @@ def create_full_pie_chart(categories, sizes):
 
     plt.legend(wedges, categories, loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
 
-    plt.savefig("docker_hub_categories_full_pie.png", dpi=300, bbox_inches="tight")
+    plt.savefig("docker_hub_categories.png", dpi=300, bbox_inches="tight")
     plt.close()
 
 
@@ -41,7 +41,7 @@ def count_images_by_category(items):
     categories, sizes = zip(*sorted_categories)
     create_full_pie_chart(categories, sizes)
 
-    output += "\n![Pie Chart of Docker Hub Categories](docker_hub_categories_pie.png)\n\n"
+    output += "\n\n![Pie Chart of Docker Hub Categories](docker_hub_categories.png)\n\n"
 
     return output
 
