@@ -22,6 +22,8 @@
 - Developer Tools: 41
 - Web Analytics: 22
 - Message Queues: 20
+![Pie Chart of Docker Hub Categories](docker_hub_categories_pie.png)
+
 
 ## Top 5 mỗi category có star_count từ cao đến thấp:
 

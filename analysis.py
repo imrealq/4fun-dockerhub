@@ -1,7 +1,29 @@
 from collections import defaultdict
 from datetime import datetime
 
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 from db import get_all_items
+
+
+def create_full_pie_chart(categories, sizes):
+    colors = sns.color_palette("husl", len(categories))
+
+    plt.figure(figsize=(12, 8))
+    wedges, _ = plt.pie(sizes, colors=colors, startangle=90, wedgeprops=dict(width=0.3))
+
+    centre_circle = plt.Circle((0, 0), 0.70, fc="white")
+    fig = plt.gcf()
+    fig.gca().add_artist(centre_circle)
+
+    plt.axis("equal")
+    plt.title("Categories of Docker Hub Images", fontsize=16)
+
+    plt.legend(wedges, categories, loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+
+    plt.savefig("docker_hub_categories_full_pie.png", dpi=300, bbox_inches="tight")
+    plt.close()
 
 
 def count_images_by_category(items):
@@ -15,6 +37,11 @@ def count_images_by_category(items):
     output = "## Tổng số image theo categories:\n\n"
     for category, count in sorted_categories:
         output += f"- {category}: {count}\n"
+
+    categories, sizes = zip(*sorted_categories)
+    create_full_pie_chart(categories, sizes)
+
+    output += "\n![Pie Chart of Docker Hub Categories](docker_hub_categories_pie.png)\n\n"
 
     return output
 
