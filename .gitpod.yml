@@ -9,6 +9,7 @@ image:
 
 tasks:
   - init: pip install -r requirements.txt
+          pip install black isort flake8 debugpy
 
 vscode:
   extensions:
